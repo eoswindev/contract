@@ -1,0 +1,28 @@
+#pragma once
+
+#define TEAM_ACCOUNT N(luckyaddress)
+#define DIVI_ACCOUNT N(eoswinbonus1)
+
+#define TOKEN_CONTRACT N(eosio.token)
+#define GAME_TOKEN_CONTRACT N(eoslucktoken)
+#define ADD_CONTRACT N(eosadddddddd)
+#define ATD_CONTRACT N(eosatidiumio)
+#define DAC_CONTRACT N(eosdactokens)
+#define HORUS_CONTRACT N(horustokenio)
+#define IQ_CONTRACT N(everipediaiq)
+#define KARMA_CONTRACT N(therealkarma)
+#define TP_CONTRACT N(eosiotptoken)
+#define MEET_CONTRACT N(eosiomeetone)
+#define BLACK_CONTRACT N(eosblackteam)
+
+#define EOS_SYMBOL S(4, EOS)
+#define GAME_SYMBOL S(4, LUCKY)
+#define ADD_SYMBOL S(4, ADD)
+#define ATD_SYMBOL S(4, ATD)
+#define DAC_SYMBOL S(4, EOSDAC)
+#define HORUS_SYMBOL S(4, HORUS)
+#define IQ_SYMBOL S(4, IQ)
+#define KARMA_SYMBOL S(4, KARMA)
+#define TP_SYMBOL S(4, TPT)
+#define MEET_SYMBOL S(4, MEETONE)
+#define BLACK_SYMBOL S(4, BLACK)

@@ -1,7 +1,8 @@
 # EOS.Win - 纯链上去中心化游戏平台
 
 我们很高兴开源所有的合约代码，包括骰子、彩票、21点以及jackpot，为EOS的生态贡献自己的力量。
-正如我们之前一直强调的，EOS.Win没有服务器，所有的随机数都是在链上生成的。
+
+#### 正如我们之前一直强调的，EOS.Win没有服务器，所有的随机数都是在链上生成的。
 
 对于将来的每一次合约更新，我们将在更新合约之后：
 1. 同步更新eospark的代码验证。
@@ -24,8 +25,8 @@ $ bc2d73d0eb6f22d8a5bf3bde6464e245df5f4977c07822bf1a189bc204549b33  dice.wasm
 ```sh
 $ cleos push action eosluckydice verify '["your_receipt_seed"]' -p youraccount
 ```
-
 #### 骰子幸运抽奖随机数验证：
 ```sh
 $ cleos push action eosluckydice luckreceipt '["your_receipt_seed"]' -p youraccount
 ```
+当然这些操作也可以在bloks(https://bloks.io/account/eosluckydice)上完成
