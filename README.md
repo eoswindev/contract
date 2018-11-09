@@ -29,4 +29,4 @@ $ cleos push action eosluckydice verify '["your_receipt_seed"]' -p youraccount
 ```sh
 $ cleos push action eosluckydice luckreceipt '["your_receipt_seed"]' -p youraccount
 ```
-当然这些操作也可以在[bloks](https://bloks.io/account/eosluckydice)上完成
+当然这些操作也可以在[bloks](https://bloks.io/account/eosluckydice)上完成。
