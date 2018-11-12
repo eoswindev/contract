@@ -57,6 +57,7 @@
 #define DAY_SECONDS 86400
 #define HOUR_SECONDS 3600
 #define LUCK_DRAW_MAX 10001   
+#define MAX_BET_PERCENT 200 
 
 using namespace std;
 
@@ -629,11 +630,11 @@ class dice : public eosio::contract {
         eosio_assert(t.from != inviter, "Inviter can't be self");
 
         int64_t max_reward = get_bet_reward(roll_type, roll_border, amt);
-        float max_bet_token = (amt * (balance.amount / 10) / max_reward) / 10000.0;
+        float max_bet_token = (amt * (balance.amount / MAX_BET_PERCENT) / max_reward) / 10000.0;
         float min_bet_token = (trade_iter->min_bet) / 10000.0;
         char str[128];
         sprintf(str, "Bet amount must between %f and %f", min_bet_token, max_bet_token);
-        eosio_assert(amt >= trade_iter->min_bet && max_reward <= (balance.amount / 10), str);
+        eosio_assert(amt >= trade_iter->min_bet && max_reward <= (balance.amount / MAX_BET_PERCENT), str);
 
         eosio_assert(roll_border >= ROLL_BORDER_MIN && roll_border <= ROLL_BORDER_MAX, "Bet border must between 2 to 97");
 
@@ -664,8 +665,8 @@ class dice : public eosio::contract {
 
     uint64_t get_random(uint64_t max)
     {
-      auto g = _globals.get(GLOBAL_ID_BET, "global is missing");
-      auto sseed = _random.create_sys_seed(g);
+      // auto g = _globals.get(GLOBAL_ID_BET, "global is missing");
+      auto sseed = _random.create_sys_seed(0);
 
       auto s = read_transaction(nullptr, 0);
       char *tx = (char *)malloc(s);

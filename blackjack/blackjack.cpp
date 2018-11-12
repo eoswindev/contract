@@ -45,13 +45,8 @@ namespace eoswin {
 		checksum256 txid;
 		sha256(tx, s, &txid);
 	
-		auto pos = _tradetokens.begin();
 		checksum256 sseed;
-		if (pos == _tradetokens.end()) {
-			sseed = _random.create_sys_seed(tapos_block_prefix());
-		} else {
-			sseed = _random.create_sys_seed(*pos);
-		}
+		sseed = _random.create_sys_seed(0);
 		
 		_random.seed(sseed, txid);
 
@@ -152,15 +147,13 @@ namespace eoswin {
 			auto banker_open_card = gm.banker_cards[0];
 			if (is_A(banker_open_card)) {
 				for (uint8_t i=0; i<52; i++) {
-					uint8_t j = i % 13;
-					if (is_ten(j)) {
+					if (is_ten(i)) {
 						ex_cards.push_back(i);
 					}
 				}
 			} else if (is_ten(banker_open_card)) {
 				for (uint8_t i=0; i<52; i++) {
-					uint8_t j = i % 13;
-					if (is_A(j)) {
+					if (is_A(i)) {
 						ex_cards.push_back(i);
 					}
 				}
@@ -169,7 +162,7 @@ namespace eoswin {
 		}
 
 		auto card = random_card(gm, ex_cards);
-		gm.banker_cards.insert(itr, card);
+		gm.banker_cards.insert(gm.banker_cards.begin(), card);
 	}
 
 	bool blackjack::is_A(uint8_t card) {
