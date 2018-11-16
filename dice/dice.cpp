@@ -589,9 +589,6 @@ class dice : public eosio::contract {
       eosio_assert( tx_size == read_size, "read_transaction failed");
       auto trx = eosio::unpack<eosio::transaction>( tx, read_size );
       eosio::action first_action = trx.actions.front();
-      std::string action_name = eosio::name{first_action.name}.to_string();
-      std::string _account_name = eosio::name{first_action.account}.to_string();
-
       eosio_assert(first_action.name == N(transfer) && first_action.account == _code, "wrong transaction");
 
       check_symbol_code(t.quantity);

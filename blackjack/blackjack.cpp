@@ -57,7 +57,7 @@ namespace eoswin {
         uint8_t count_A = 0;
         uint8_t card = 0;
         for (int i = 0; i < cards.size(); i++) {
-            if (cards[i] >= 52) {
+            if (cards[i] >= 104) {
                 continue;
             }
 
@@ -71,7 +71,7 @@ namespace eoswin {
             }
         }
 
-        eosio_assert(count_A <= 4, "card A num can't large than 4!");
+        eosio_assert(count_A <= 8, "card A num can't large than 4!");
         uint8_t result = points;
         if (count_A > 0) {
             uint8_t temp = 0;
@@ -110,7 +110,7 @@ namespace eoswin {
 		}
 
 		vector<uint8_t> cards;
-		for (uint8_t num = 0; num < 52; num++) {
+		for (uint8_t num = 0; num < 104; num++) {
 			if (used[num] == 1) {
 				continue;
 			}
@@ -129,8 +129,9 @@ namespace eoswin {
 	void blackjack::deal_to_banker(game_item& gm) {
 
 		uint8_t banker_points = cal_points(gm.banker_cards);
+		uint8_t player_points = cal_points(gm.player_cards);
 		vector<uint8_t> ex_cards;
-		while(banker_points < 17) {
+		while(!(banker_points >= 17 && banker_points >= player_points)) {
 			auto card = random_card(gm, ex_cards);
 			gm.banker_cards.push_back(card);
 
@@ -146,13 +147,13 @@ namespace eoswin {
 		if (gm.status == GAME_STATUS_STANDED && gm.manual_stand == true ) {
 			auto banker_open_card = gm.banker_cards[0];
 			if (is_A(banker_open_card)) {
-				for (uint8_t i=0; i<52; i++) {
+				for (uint8_t i=0; i<104; i++) {
 					if (is_ten(i)) {
 						ex_cards.push_back(i);
 					}
 				}
 			} else if (is_ten(banker_open_card)) {
-				for (uint8_t i=0; i<52; i++) {
+				for (uint8_t i=0; i<104; i++) {
 					if (is_A(i)) {
 						ex_cards.push_back(i);
 					}
@@ -204,13 +205,13 @@ namespace eoswin {
 		uint8_t suit  = card / 13;
 		uint8_t point = card % 13;
 		string suit_str;
-		if (suit == 0) {
+		if (suit == 0 || suit == 4) {
 			suit_str = "♦";
-		} else if (suit == 1) {
+		} else if (suit == 1 || suit == 5) {
 			suit_str = "♥";
-		} else if (suit == 2) {
+		} else if (suit == 2 || suit == 6) {
 			suit_str = "♠";
-		} else if (suit == 3) {
+		} else if (suit == 3 || suit == 7) {
 			suit_str = "♣";
 		} else {
 			suit_str = "unknown";

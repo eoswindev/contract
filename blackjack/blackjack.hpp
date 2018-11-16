@@ -172,8 +172,8 @@ namespace eoswin {
 
     class blackjack: public contract {
         public: 
-        const uint8_t A[4][2] = {
-            {1,11}, {2,12}, {3,13}, {4,14}
+        const uint8_t A[8][2] = {
+            {1,11}, {2,12}, {3,13}, {4,14}, {5,15}, {6,16}, {7,17}, {8,18}
         };
 
         public:
