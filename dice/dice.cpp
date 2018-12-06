@@ -39,6 +39,7 @@
 #define GLOBAL_ID_MIN_JACKPOT_BET       119
 #define GLOBAL_ID_JACKPOT_ACTIVE        120
 #define GLOBAL_ID_DIVIDEND_PERCENT      121
+#define GLOBAL_ID_MAX_BET_PER           122
 
 #define BET_HISTORY_LEN 40
 #define WONDER_HIGH_ODDS 20
@@ -56,8 +57,7 @@
 #define TOP_NOTICE 1
 #define DAY_SECONDS 86400
 #define HOUR_SECONDS 3600
-#define LUCK_DRAW_MAX 10001   
-#define MAX_BET_PERCENT 200 
+#define LUCK_DRAW_MAX 10001
 
 using namespace std;
 
@@ -637,12 +637,15 @@ class dice : public eosio::contract {
         }
         eosio_assert(t.from != inviter, "Inviter can't be self");
 
+        auto max_bet_percent_pos = _globals.find(GLOBAL_ID_MAX_BET_PER);
+        uint64_t max_bet_percent = max_bet_percent_pos->val;
+
         int64_t max_reward = get_bet_reward(roll_type, roll_border, amt);
-        float max_bet_token = (amt * (balance.amount / MAX_BET_PERCENT) / max_reward) / 10000.0;
+        float max_bet_token = (amt * (balance.amount / max_bet_percent) / max_reward) / 10000.0;
         float min_bet_token = (trade_iter->min_bet) / 10000.0;
         char str[128];
         sprintf(str, "Bet amount must between %f and %f", min_bet_token, max_bet_token);
-        eosio_assert(amt >= trade_iter->min_bet && max_reward <= (balance.amount / MAX_BET_PERCENT), str);
+        eosio_assert(amt >= trade_iter->min_bet && max_reward <= (balance.amount / max_bet_percent), str);
 
         eosio_assert(roll_border >= ROLL_BORDER_MIN && roll_border <= ROLL_BORDER_MAX, "Bet border must between 2 to 97");
 
