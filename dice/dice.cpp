@@ -409,6 +409,11 @@ class dice : public eosio::contract {
         a.val = 25;
       });
 
+      _globals.emplace(_self, [&](auto &a) {
+        a.id = GLOBAL_ID_MAX_BET_PER;
+        a.val = 100;
+      });
+      
       _notices.emplace(_self, [&](auto &a) {
         a.id = TOP_NOTICE;
         a.val = "";
@@ -582,6 +587,7 @@ class dice : public eosio::contract {
       {
         return;
       }
+
 
       auto tx_size = transaction_size();
       char tx[tx_size];
@@ -850,7 +856,13 @@ class dice : public eosio::contract {
         a.times += 1;
       });
 
-      INLINE_ACTION_SENDER(dice, receipt)(_self, {_self, N(active)}, {cur_bet_id, bettor, bet_asset, payout_list, _seed, roll_type, roll_border, roll_value});
+      eosio::transaction r_out;
+      auto t_data = make_tuple(cur_bet_id, bettor, bet_asset, payout_list, _seed, roll_type, roll_border, roll_value);
+      r_out.actions.emplace_back(eosio::permission_level{_self, N(active)}, _self, N(receipt), t_data);
+      r_out.delay_sec = 0;
+      r_out.send(bettor, _self);
+
+      // INLINE_ACTION_SENDER(dice, receipt)(_self, {_self, N(active)}, {cur_bet_id, bettor, bet_asset, payout_list, _seed, roll_type, roll_border, roll_value});
       
       if (inviter != TEAM_ACCOUNT && is_account(inviter)) {
         eosio::asset inviter_reward = eosio::asset(bet_asset.amount * INVITE_BONUS, bet_asset.symbol);
