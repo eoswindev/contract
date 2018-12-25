@@ -785,15 +785,12 @@ class dice : public eosio::contract {
 
       uint32_t _now = now();
 
-      if ( (roll_type == ROLL_TYPE_SMALL && roll_value < roll_border) || (roll_type == ROLL_TYPE_BIG && roll_value > roll_border) )
+      bool is_win = (roll_type == ROLL_TYPE_SMALL && roll_value < roll_border) || (roll_type == ROLL_TYPE_BIG && roll_value > roll_border);
+      if ( is_win )
       {
         int64_t reward_amt = get_bet_reward(roll_type, roll_border, bet_asset.amount);
         payout = eosio::asset(reward_amt, bet_asset.symbol);
 
-        char str[128];
-        sprintf(str, "Bet id: %lld. You win! Remember to claim your dividens with your LUCKY token! https://eos.win", cur_bet_id);
-        INLINE_ACTION_SENDER(eosio::token, transfer)(trade_iter->contract, {_self, N(active)}, {_self, bettor, payout, string(str)} );
-        
         _trades.modify(trade_iter, 0, [&](auto& a) {
           a.out += reward_amt;
         });
@@ -877,6 +874,13 @@ class dice : public eosio::contract {
       }
 
       to_bonus_bucket(bet_asset.symbol);
+
+      if ( is_win )
+      {
+        char str[128];
+        sprintf(str, "Bet id: %lld. You win! Remember to claim your dividens with your LUCKY token! https://eos.win", cur_bet_id);
+        INLINE_ACTION_SENDER(eosio::token, transfer)(trade_iter->contract, {_self, N(active)}, {_self, bettor, payout, string(str)} );
+      }
     }
 
     /// @abi action
