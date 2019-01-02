@@ -536,7 +536,8 @@ class dice : public eosio::contract {
       INLINE_ACTION_SENDER(eosio::token, transfer)(trade_iter->contract, {_self,N(active)}, {_self, DIVI_ACCOUNT, eosio::asset(dividends, sym), "To EOS.Win Bonus Pool [https://eos.win/dice]"} );
     }
 
-    void reward_game_token(account_name bettor, account_name inviter, eosio::asset bet_asset) {
+    void rewardlucky(account_name bettor, account_name inviter, eosio::asset bet_asset) {
+      require_auth(_self);
       auto pos = _globals.find(GLOBAL_ID_TOKEN_MULTIPLE);
       uint64_t multiple = 1;
       if (pos != _globals.end()) {
@@ -864,45 +865,7 @@ class dice : public eosio::contract {
       }
 
       if (bet_asset.symbol == EOS_SYMBOL) {
-        // reward_game_token(bettor, inviter, bet_asset);
-
-        auto pos = _globals.find(GLOBAL_ID_TOKEN_MULTIPLE);
-        uint64_t multiple = 1;
-        if (pos != _globals.end()) {
-          multiple = pos->val;
-        }
-
-        auto num = bet_asset.amount / 2 * multiple;
-        num = bet_asset.amount % 2 == 0 ? num : num + 1;
-        if (num <= 0) {
-          return;
-        }
-        auto reward = eosio::asset(num, GAME_SYMBOL);
-
-        auto balance = _game_token.get_balance(GAME_TOKEN_CONTRACT, eosio::symbol_type(GAME_SYMBOL).name());
-        reward = reward > balance ? balance : reward;
-
-        auto to_better = reward * BETTOR_TOKEN_FEE / 10;
-        auto to_team   = reward - to_better;
-        if (inviter != TEAM_ACCOUNT) {
-          auto to_inviter = reward * INVITER_TOKEN_FEE / 10;
-          if (to_inviter.amount > 0) {
-            to_team.set_amount(to_team.amount - to_inviter.amount);
-
-            if (is_account(inviter)) {
-              r_out.actions.emplace_back(eosio::permission_level{GAME_TOKEN_CONTRACT, N(active)}, GAME_TOKEN_CONTRACT, N(transfer), eosio::currency::transfer{GAME_TOKEN_CONTRACT, inviter, to_inviter, "LUCKY token for inviter [https://eos.win]"});
-            }
-          }
-        }
-
-        if (to_better.amount > 0) {
-          r_out.actions.emplace_back(eosio::permission_level{GAME_TOKEN_CONTRACT, N(active)}, GAME_TOKEN_CONTRACT, N(transfer), eosio::currency::transfer{GAME_TOKEN_CONTRACT, bettor, to_better, "LUCKY token for player [https://eos.win]"});
-            
-        }
-
-        if (to_team.amount > 0) {
-          r_out.actions.emplace_back(eosio::permission_level{GAME_TOKEN_CONTRACT, N(active)}, GAME_TOKEN_CONTRACT, N(transfer), eosio::currency::transfer{GAME_TOKEN_CONTRACT, TEAM_ACCOUNT, to_team, "LUCKY token for team [https://eos.win]"});
-        }
+        r_out.actions.emplace_back(eosio::permission_level{_self, N(active)}, _self, N(rewardlucky), make_tuple(bettor, inviter, bet_asset));
       }
 
       to_bonus_bucket(bet_asset.symbol);
@@ -1469,4 +1432,4 @@ class dice : public eosio::contract {
 		}                                                                                 \
   }
 
-EOSIO_ABI_EX(dice, (init)(setactive)(setglobal)(setnotice)(setluckrwd)(setriskline)(setdivi)(setminbet)(receipt)(verify)(start)(resolved)(luck)(lucking)(lucked)(luckreceipt)(luckverify))
+EOSIO_ABI_EX(dice, (init)(setactive)(setglobal)(setnotice)(setluckrwd)(setriskline)(setdivi)(setminbet)(receipt)(rewardlucky)(verify)(start)(resolved)(luck)(lucking)(lucked)(luckreceipt)(luckverify))
