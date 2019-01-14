@@ -22,7 +22,6 @@ namespace eoswin {
 				content   = t;
 				block  = tapos_block_num();
 				prefix = tapos_block_prefix();
-				time   = current_time();
 			}
 		};
 
